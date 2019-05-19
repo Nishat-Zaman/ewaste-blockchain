@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>HOME</title>
+
+<!-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+ 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ --> 
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="js/jquery.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="js/bootstrap.min.css">
+  <script src="js/web3.min.js"></script>
+  <script src="js/truffle-contract.js"></script>
+  <script src="js/app.js"></script>
+  <!--<script src="js/app.js"></script>-->
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+
+</head>
+<body>
+        <style type="text/css">
+            .bs-example{
+              margin-top: 0;
+              margin: 20px;
+            }
+          </style>
+          <div class="bs-example">
+              <nav class="navbar navbar-default">
+                  <!-- Brand and toggle get grouped for better mobile display -->
+                  <div class="navbar-header">
+                      
+                      <a href="http://127.0.0.1:3000/index.html" class="navbar-brand">EWASTE MANAGEMENT</a>
+                  </div>
+                  <!-- Collection of nav links and other content for toggling -->
+                  <div id="navbarCollapse" class="collapse navbar-collapse">
+                     <!-- <ul class="nav navbar-nav">
+                          <li class="active"><a href="#">Home</a></li>
+                          <li><a href="http://127.0.0.1:3000/newProduct.html">Register Product</a></li>
+                                <li><a href="http://127.0.0.1:3000/trace">Trace Product</a></li>
+                                <li><a href="http://127.0.0.1:3000/transferProduct.html">Transfer Product</a></li>
+                      </ul>-->
+                      <ul class="nav navbar-nav navbar-right">
+                            <div id="logged" class="nav navbar-nav navbar-right">
+                                    <li ><a href="http://127.0.0.1:3000/products.html">Products Owned</a></li>
+                                    	<!--<li ><a href="http://127.0.0.1:3000/traceProduct.html">Trace Product</a></li>-->
+                                    <li ><a href="http://127.0.0.1:3000/transferProduct.html">Transfer Product</a></li>
+                                    <li ><a href="http://127.0.0.1:3000/index.html">Logout</a></li>
+                            </div>
+                           
+                      </ul>
+                      <ul class="nav navbar-nav navbar-right">
+                          
+                            
+                        </ul>
+                  </div>
+              </nav>
+          </div>
+          
+          <div class="container">
+				<script>
+						$(document).ready(function(){
+							$('.transfer').addClass("hidden");
+                   
+				console.log(sessionStorage.getItem("address"));
+				if(sessionStorage.getItem("address")){
+					$("#logged").show();
+					$("#notlogged").hide();
+				}
+				else{
+					$("#notlogged").show();
+					$('#logged').hide();
+                }
+	});
+	$("#req").show();
+	$("#req").html('no transfer requests pending');
+	console.log("hi");
+                   var transferEvent = ewaste.transferinitiated({},{
+            fromBlock: 0,
+            toBlock: 'latest'
+		});
+		console.log(sessionStorage.getItem("address"))
+		transferEvent.watch(function(error, result){
+            if (!error && result.args.u2==sessionStorage.getItem("address"))
+                {
+					ewaste.get_current_owner(result.args.pid, (err, res) => {
+					if(res!=sessionStorage.getItem("address"))
+					{
+						console.log(res);
+						console.log(result);
+							$("#req").show();
+							$("#req").html('product:'+ web3.toAscii(result.args.prod_name)+'( id: ' +result.args.pid + ') transfer request initiated by ' + web3.toAscii(result.args.user1_name) );
+							$('.transfer').removeClass("hidden").addClass("visible");
+							$("#accept").click(function() {
+		
+						ewaste.transferOwnership_product(result.args.u1,result.args.u2,result.args.pid, (err, res) => {
+						if (res) 
+						{
+							$('.transfer').removeClass("visible").addClass("hidden");
+							
+							$("#req").html("product transfer successful");
+							ewaste.getBalance((err,res) => {
+											if(!err)
+												console.log("contract balance" + res.c);	
+											else
+												console.log("could not retrieve contract balance");
+										});
+                           if(sessionStorage.getItem("usertype")!="Manufacturer" && sessionStorage.getItem("usertype")!="Ewaste")
+						   {
+							   ewaste.deposit({from:sessionStorage.getItem("address"),value:web3.toWei(10,"finney")},(err, res)=> {
+									if(!err)
+									{
+										console.log("10 finney deposited to contract");
+										ewaste.getBalance((err,res) => {
+											if(!err)
+												console.log("contract balance" + res.c);	
+											else
+												console.log("could not retrieve contract balance");
+										});
+									}
+									else
+									{
+										console.log("failed");
+										console.log(err);
+									}
+
+							   } );
+						   }
+					}  
+						else
+						{
+							$("#req").html('product transfer failed'); 
+							console.log(res);
+						}
+					});
+				} );
+					$("#reject").click(function() {
+					
+						$('.transfer').removeClass("visible").addClass("hidden");
+							$("#req").html("product transfer rejected");
+					} );
+					//transferEvent.stopPropagation();
+                
+						}
+					});
+						
+				}  
+				 else {
+					
+                   if(error)
+                    	console.log(error);
+				}
+				
+        });
+						
+                        </script> 
+                        <div id="req">
+                            
+
+						</div>
+						<br/>
+			 <div   class="transfer">
+                    <button  id="accept" type="button" class="btn btn-info" ><i class="icon-hand-right"></i> &nbsp Accept</button>
+                    <button  id="reject" type="button" class="btn btn-info" ><i class="icon-hand-right"></i> &nbsp Reject</button>
+                </div>
+			<!--
+            <h1>Coursetro Instructor</h1>
+            <span id="countIns"></span>
+
+            <h2 id="instructor"></h2>
+            <span id="insTrans"></span>
+            <hr>
+       
+        <img id="loader" src="https://loading.io/spinners/double-ring/lg.double-ring-spinner.gif">
+        <label for="fName" class="col-lg-2 control-label">First Name</label>
+        <input id="fName" type="text">
+
+        <label for="lName" class="col-lg-2 control-label">Last Name</label>
+        <input id="lName" type="text">
+
+        <label for="age" class="col-lg-2 control-label">Instructor Age</label>
+        <input id="age" type="text">
+
+        <button id="button">Update Instructor</button>
+        </div>-->
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+		<!--
+            <script>
+
+                if (typeof web3 !== 'undefined') {
+                    web3 = new Web3(web3.currentProvider);
+                } else {
+                    // set the provider you want from Web3.providers
+                    web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
+                }
+                //web3.eth.defaultAccount = web3.eth.getAccounts(function(e,accounts){ return accounts[0] });
+                web3.eth.defaultAccount = web3.eth.accounts[5];
+
+                var ewasteContract = web3.eth.contract([
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_address",
+				"type": "address"
+			},
+			{
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"name": "pass",
+				"type": "string"
+			},
+			{
+				"name": "utype",
+				"type": "string"
+			}
+		],
+		"name": "createParticipant",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_address",
+				"type": "address"
+			},
+			{
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"name": "p_cost",
+				"type": "uint256"
+			},
+			{
+				"name": "p_specs",
+				"type": "string"
+			},
+			{
+				"name": "p_review",
+				"type": "string"
+			}
+		],
+		"name": "newProduct",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"name": "pid",
+				"type": "uint256"
+			}
+		],
+		"name": "prodadded",
+		"type": "event"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "_p_id",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "_t_id",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_address",
+				"type": "address"
+			}
+		],
+		"name": "getParticipant",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "prod_id",
+				"type": "uint256"
+			}
+		],
+		"name": "getProduct_details",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "address"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "participants",
+		"outputs": [
+			{
+				"name": "_userName",
+				"type": "string"
+			},
+			{
+				"name": "_passWord",
+				"type": "string"
+			},
+			{
+				"name": "_userType",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "products",
+		"outputs": [
+			{
+				"name": "_product_name",
+				"type": "string"
+			},
+			{
+				"name": "_product_cost",
+				"type": "uint256"
+			},
+			{
+				"name": "_product_specs",
+				"type": "string"
+			},
+			{
+				"name": "_product_review",
+				"type": "string"
+			},
+			{
+				"name": "_product_owner",
+				"type": "address"
+			},
+			{
+				"name": "_manufacture_date",
+				"type": "uint256"
+			},
+			{
+				"name": "_mfg",
+				"type": "address"
+			},
+			{
+				"name": "_sup",
+				"type": "address"
+			},
+			{
+				"name": "_ret",
+				"type": "address"
+			},
+			{
+				"name": "_cust",
+				"type": "address"
+			},
+			{
+				"name": "_expiry_date",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "tracks",
+		"outputs": [
+			{
+				"name": "_product_id",
+				"type": "uint256"
+			},
+			{
+				"name": "_prev_product_owner",
+				"type": "address"
+			},
+			{
+				"name": "_new_product_owner",
+				"type": "address"
+			},
+			{
+				"name": "_transfer_type",
+				"type": "string"
+			},
+			{
+				"name": "_timeStamp",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_address",
+				"type": "address"
+			},
+			{
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"name": "pass",
+				"type": "string"
+			}
+		],
+		"name": "validatelogin",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+]);
+
+  var ewaste = ewasteContract.at('0x42ebfe39a4d06cb62eb40b007e2942525a3382d1');
+        console.log(ewaste);
+		-->
+		<script>
+		
+        /*ewaste.getInstructor(function(error, result){
+            if(!error)
+                {
+                    $("#instructor").html(result[0]+' ('+result[1]+' years old)');
+                    console.log(result);
+                }
+            else
+                console.error(error);
+        });
+*/
+//var instructorEvent = ewaste.Instructor();
+//var instructorEvent = ewaste.instructorInfo({},'latest');
+/*instructorEvent.watch(function(error, result){
+            if (!error)
+                {
+                    $("#loader").hide();
+                    $("#instructor").html(result.args.name + ' (' + result.args.age + ' years old)');
+                } else {
+                    $("#loader").hide();
+                    console.log(error);
+                }
+        });*/
+        /*instructorEvent.watch(function (err, result) {
+    if (!err) {
+        if (result.blockHash != $("#instrans").html()) 
+            $("#loader").hide();
+            
+        $("#insTrans").html('Block hash: ' +result.blockHash);
+        $("#instructor").html(web3.toAscii(result.args.fName) + ' ' + web3.toAscii(result.args.lName) + ' (' + result.args.age + ' years old)');
+    } else {
+        $("#loader").hide();
+    }
+});
+ewaste.countInstructors((err, res) => {
+    if (res)
+        $("#countIns").html(res + ' Instructors'); 
+});*/
+   /*     $("#button").click(function() {
+         // ewaste.setInstructor($("#name").val(), $("#age").val());
+         ewaste.setInstructor($("#name").val(), $("#age").val(), (err, res) => {
+    if (err) {
+        $("#loader").hide();
+        console.log('oh no');
+    }
+    else{
+        $("#loader").show();
+    }
+});
+        });*/
+		/*
+        $("#button").click(function() {
+    $("#loader").show();
+    ewaste.setInstructor(web3.eth.defaultAccount, $("#age").val(), $("#fName").val(),$("#lName").val(), (err, res) => {
+        if (err) 
+            $("#loader").hide();
+});
+ } );*/
+if(getaccount==contractowner)
+{
+	$('#owner').show();
+}
+else
+{
+	$('#notowner').show();
+}
+
+    </script>
+  
+</body>
+</html>

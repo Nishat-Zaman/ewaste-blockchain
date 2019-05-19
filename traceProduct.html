@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Product Tracking</title>
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+     <link rel="stylesheet" href="css/main.css">
+   
+    <script src="js/jquery.min.js"></script>
+ <script src="js/bootstrap.min.js"></script>
+ <link rel="stylesheet" href="js/bootstrap.min.css">
+ <script src="js/web3.min.js"></script>
+ <script src="js/truffle-contract.js"></script>
+ <script src="js/app.js"></script>
+</head>
+<body>
+        <style type="text/css">
+            .bs-example{
+              margin-top: 0;
+              margin: 20px;
+            }
+          </style>
+                <div class="bs-example">
+                    <nav class="navbar navbar-default">
+                        <!-- Brand and toggle get grouped for better mobile display -->
+                        <div class="navbar-header">
+                            
+                            <a href="http://127.0.0.1:3000/index.html" class="navbar-brand">EWASTE MANAGEMENT</a>
+                        </div>
+                        <!-- Collection of nav links and other content for toggling -->
+                        <div id="navbarCollapse" class="collapse navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                <li class="active"><a href="#">Home</a></li>
+                                <!--<li><a href="http://127.0.0.1:3000/newProduct.html">Register Product</a></li>-->
+                                <!--<li><a href="http://127.0.0.1:3000/trace">Trace Product</a></li>-->
+                                <!--<li><a href="http://127.0.0.1:3000/transferProduct.html">Transfer Product</a></li>-->
+                            </ul>
+                            <ul class="nav navbar-nav navbar-right">
+                                <!--<li><a href="http://127.0.0.1:3000/logout">Logout</a></li>-->
+                                
+                            </ul>
+                        </div>
+                    </nav>
+                    <div class="content-wrapper">
+                          
+                        <div class="container-fluid">
+                          <div class="container-fluid">
+                              <form class="form-horizontal">
+                                  <div class="form-group">
+                                        <label class="control-label col-sm-2" >Product number:</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="t_id" placeholder="Enter track no">
+                                        </div>
+                                    </div>
+                              </form>
+                          </div>
+                          <div class="form-group">        
+                              <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" id="trackbutton" class="btn btn-default">Track</button>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div  id ="display1" class="content-wrapper" style="padding-top: 10%;padding-left:50px;">
+
+                            <div class="container-fluid">
+                              <div class="container-fluid">
+                                  <form class="form-horizontal">
+                                        <div class="form-group" id="dname">
+                                                <label class="control-label col-sm-2" >Product Name:</label>
+                                                <div class="col-sm-10">
+                                                    <span id="prodName_id"></span>
+                                                </div>
+                                        </div>
+                                                <div class="form-group" id="dtype">
+                                                        <label class="control-label col-sm-2" >Product Type:</label>
+                                                        <div class="col-sm-10">
+                                                            <span id="prodType_id"></span>
+                                                        </div>
+                                                    </div>
+                                                        <div class="form-group" id="ddate">
+                                                                <label class="control-label col-sm-2" >Product Date:</label>
+                                                                <div class="col-sm-10">
+                                                                    <span id="prodDate_id"></span>
+                                                                </div>
+                                                        </div>
+                                      
+                                        <div class="form-group" id="dmanu">
+                                                <label class="control-label col-sm-2" >Manufacturer:</label>
+                                                <div class="col-sm-10">
+                                                    <span id="manu_id"></span>
+                                                </div>
+                                            </div>
+                                        <div class="form-group" id="dsupp">
+                                                <label class="control-label col-sm-2" >Supplier: </label>
+                                                <div class="col-sm-10">
+                                                    <span id="supp_id"></span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group" id="dret">
+                                                    <label class="control-label col-sm-2" >Retailer:</label>
+                                                    <div class="col-sm-10">
+                                                        <span id="ret_id"></span>
+                                                    </div>
+                                                </div>
+                                
+                                        <div class="form-group" id="dcust1">
+                                                <label class="control-label col-sm-2" >Customer :</label>
+                                                <div class="col-sm-10">
+                                                    <span id="cust1_id"></span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group" id="dcust2">
+                                                <label class="control-label col-sm-2" >Customer :</label>
+                                                <div class="col-sm-10">
+                                                    <span id="cust2_id"></span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group" id="dewaste">
+                                                <label class="control-label col-sm-2" >E-waste :</label>
+                                                <div class="col-sm-10">
+                                                    <span id="ewaste_id"></span>
+                                                </div>
+                                            </div>
+                                  </form>
+                              </div>
+                              
+                            </div>
+                          </div>
+                </div>
+                
+                <script>
+                   /* $('#display1').hide();
+                   $(document).ready(function(){
+                        $('#track').click(function (event){
+                            event.preventDefault(); 
+                            $.ajax({
+                                type: 'POST',
+                                url:"http://127.0.0.1:3000/trace",
+                                headers: {
+                                    "content-type":"application/x-www-form-urlencoded"
+                                },  
+                                data: {
+                                    
+                                    "tid": $('#t_id').val()
+                                    
+                                    
+                                },
+                                success: function (data){
+                                    console.log("data: ", data);
+                                    //var number i=0;
+                                    $('#trackid').html(data[0]);
+                                    $('#productid').html(data[1]);
+                                    $('#owner').html(data[2]);
+                                    $('#ownerAdd').html(data[3]);
+                                    $('#ownerAdd').html(data[3]);
+                                    $('#time').html(data[4]);
+                                    $('#display1').show();
+                                    alert(data);
+                                }
+                            })
+                            //console.log("Type: " , $('#myselect').val()+ " pass:  " + $('#password').val() + " User: "+ $('#name').val()  )
+                        });
+                        })*/
+     $("#trackbutton").click(function() {             
+            ewaste.track_by_id1($("#t_id").val(), getaccount, (err,res) =>{
+            if (res)
+            {
+            console.log("return1" +res);
+            $('#prodName_id').html(web3.toAscii(res[0]));
+            $('#prodType_id').html(web3.toAscii(res[1]));
+            $('#prodDate_id').html(Date(res[2].c).toString().substr(4,11));
+            $('#manu_id').html(web3.toAscii(res[3]));
+           $('#supp_id').html(web3.toAscii(res[4]));
+              if(res[0]==0) $("#prodDate_id").hide();
+              if(res[0]==0) $("#dname").hide();
+              if(res[1]==0) $("#dtype").hide();
+              if(res[2]==0) $("#ddate").hide();
+              if(res[3]==0) $("#dmanu").hide();
+              if(res[4]==0) $("#dsupp").hide();
+            }
+            else
+                console.log(err);
+            
+        });  
+        ewaste.track_by_id2($("#t_id").val(), getaccount, (err,res) =>{
+            if (res)
+            {
+            console.log("result2"+res);
+            
+            $('#ret_id').html(web3.toAscii(res[0])); 
+            $('#cust1_id').html(web3.toAscii(res[1]));
+            $('#cust2_id').html(web3.toAscii(res[2])); 
+            $('#ewaste_id').html(web3.toAscii(res[3]));  
+            if(res[0]==0) $("#dret").hide();  
+            if(res[1]==0) $("#dcust1").hide();
+            if(res[2]==0) $("#dcust2").hide();
+            if(res[3]==0) $("#dewaste").hide();
+            }
+            else
+                console.log(err);
+            
+        });  
+    });
+         
+                </script>
+    
+</body>
+</html>

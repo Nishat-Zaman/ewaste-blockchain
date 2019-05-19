@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Login page</title>
+    <link rel="stylesheet" href="css/main.css">
+ <link rel="stylesheet" href="css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+ <!-- Include all compiled plugins (below), or include individual files as needed -->
+ <script src="js/jquery.min.js"></script>
+ <script src="js/bootstrap.min.js"></script>
+ <script src="js/web3.min.js"></script>
+ <script src="js/truffle-contract.js"></script>
+ <script src="js/app.js"></script>
+</head>
+<body>
+    <style type="text/css">
+    .bs-example{
+      margin-top: 0;
+      margin: 20px;
+    }
+  </style>
+        <div class="bs-example">
+            <nav class="navbar navbar-default">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    
+                    <a href="http://127.0.0.1:3000/index.html" class="navbar-brand">EWASTE MANAGEMENT</a>
+                </div>
+                <!-- Collection of nav links and other content for toggling -->
+                <div id="navbarCollapse" class="collapse navbar-collapse">
+                   <!-- <ul class="nav navbar-nav">
+                        <li class="active"><a href="#">Home</a></li>
+                        <li><a href="http://127.0.0.1:3000/newProduct.html">Register Product</a></li>
+                        <li><a href="http://127.0.0.1:3000/traceProduct.html">Trace Product</a></li>
+                        <li><a href="http://127.0.0.1:3000/transferProduct.html">Transfer Product</a></li>
+                    </ul>-->
+                    <ul class="nav navbar-nav navbar-right">
+                       
+                        <!--li id='notlogged1'><a href="http://127.0.0.1:3000/login.html">Login</a></li>-->
+                        <li id="notlogged"><a href="http://127.0.0.1:3000/register.html">Sign Up</a></li>
+                    
+						<li id="notmanu"><a href="http://127.0.0.1:3000/pendingreq.html">Approve Transfers</a></li>
+						<li id="manu"><a href="http://127.0.0.1:3000/newProduct.html">Register Product</a></li>
+						<div id="logged" class="nav navbar-nav navbar-right">
+								<li ><a href="http://127.0.0.1:3000/products.html">Products Owned</a></li>
+								<!--<li ><a href="http://127.0.0.1:3000/traceProduct.html">Trace Product</a></li>-->
+								<li ><a href="http://127.0.0.1:3000/transferProduct.html">Transfer Product</a></li>
+								<li ><a href="http://127.0.0.1:3000/index.html">Logout</a></li>
+						</div>
+						
+						
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+                           
+                            
+                        </ul>
+                </div>
+            </nav>
+        </div>
+        <div class="container">    
+            <script>
+				$("#manu").hide();
+				$("#logged").hide();
+				$("#notmanu").hide();
+				console.log(sessionStorage.getItem("address"));
+				if(sessionStorage.getItem("address")){
+					$("#logged").show();
+					$("#notlogged").hide();
+				}
+				else{
+					$("#notlogged").show();
+				}
+				if(sessionStorage.getItem("usertype")=="Manufacturer"){
+					$("#manu").show();
+				}
+				else if(sessionStorage.getItem("usertype"))
+				{
+					$("#notmanu").show();
+				}
+				
+                </script>
+                <h1 class="text-center">EWASTE MANAGEMENT</h1>
+        
+                <div id="signupbox" style="margin-top:50px" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+                            <div class="panel panel-info">
+                                <div class="panel-heading">
+                                    <div class="panel-title">Login Account</div>
+                                </div>  
+                                <div class="panel-body" >
+                                    <form id="signupform" class="form-horizontal" role="form">
+                                        
+                                            <div id="signinalert">
+                                                
+                                            </div>
+											
+                
+                                            <div class="form-group">
+                                                <label  class="col-md-3 control-label">Name</label>
+                                                <div class="col-md-9">
+                                                    <input type="text" class="form-control" name="name" id="Uname" placeholder="Uname" required>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="password" class="col-md-3 control-label">Password</label>
+                                                <div class="col-md-9">
+                                                    <input type="password" class="form-control" id="pass" name="passwd" placeholder="Password" required>
+                                                </div>
+                                            </div>
+                                            
+                                        
+                                           <!-- <select class="form-control" id="usertype" style="margin-bottom: 25px" >
+                                                <option value="#">Select Your Type</option>
+                                                <option value="Manufacturer">1. Manufacturer</option>
+                                                <option value="Supplier">2. Supplier</option>
+                                                <option value="Retailer">3. Retailer</option>
+                                                <option value="Customer">4. Customer</option>
+                                            </select>
+											-->
+        
+                                            <div class="form-group">
+                                                <!-- Button -->                                        
+                                                <div class="col-md-offset-3 col-md-9">
+                                                    <button id="btnloginpress" type="button" class="btn btn-info" ><i class="icon-hand-right"></i> &nbsp Login Account</button>
+                                                </div>
+                                            </div>
+                                        
+                                    </form>
+                                 </div>
+                            </div>
+                        </div>
+                </div>
+                    
+<!--
+
+<script>
+   /* $(document).ready(function(){
+        $('#btnloginpress').click(function (event){
+            event.preventDefault(); 
+            $.ajax({
+                type: 'POST',
+                url:"http://127.0.0.1:3000/login.html",
+                headers: {
+                    "content-type":"application/x-www-form-urlencoded"
+                },  
+                data: {
+                    "u_id":$('Uid').val(),
+                    "name": $('#Uname').val(),
+                    "pass" :$('#password').val(),
+                    "utype":$('#usertype').val()
+                    
+                },
+                success: function (data){
+                    console.log("data: ", data);
+                    //var number i=0;
+                    
+                    alert(data);
+                    window.location.href = "/trace";
+                }
+            })
+            //console.log("Type: " , $('#myselect').val()+ " pass:  " + $('#password').val() + " User: "+ $('#name').val()  )
+        });
+    })*/
+    if (typeof web3 !== 'undefined') {
+            web3 = new Web3(web3.currentProvider);
+        } else {
+            // set the provider you want from Web3.providers
+            web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
+        }
+        //web3.eth.defaultAccount = web3.eth.getAccounts(function(e,accounts){ return accounts[0] });
+        web3.eth.defaultAccount = web3.eth.accounts[5];
+
+        var ewasteContract = web3.eth.contract([
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_address",
+				"type": "address"
+			},
+			{
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"name": "pass",
+				"type": "string"
+			},
+			{
+				"name": "utype",
+				"type": "string"
+			}
+		],
+		"name": "createParticipant",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_address",
+				"type": "address"
+			},
+			{
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"name": "p_cost",
+				"type": "uint256"
+			},
+			{
+				"name": "p_specs",
+				"type": "string"
+			},
+			{
+				"name": "p_review",
+				"type": "string"
+			}
+		],
+		"name": "newProduct",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"name": "pid",
+				"type": "uint256"
+			}
+		],
+		"name": "prodadded",
+		"type": "event"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "_p_id",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "_t_id",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_address",
+				"type": "address"
+			}
+		],
+		"name": "getParticipant",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "prod_id",
+				"type": "uint256"
+			}
+		],
+		"name": "getProduct_details",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "address"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "participants",
+		"outputs": [
+			{
+				"name": "_userName",
+				"type": "string"
+			},
+			{
+				"name": "_passWord",
+				"type": "string"
+			},
+			{
+				"name": "_userType",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "products",
+		"outputs": [
+			{
+				"name": "_product_name",
+				"type": "string"
+			},
+			{
+				"name": "_product_cost",
+				"type": "uint256"
+			},
+			{
+				"name": "_product_specs",
+				"type": "string"
+			},
+			{
+				"name": "_product_review",
+				"type": "string"
+			},
+			{
+				"name": "_product_owner",
+				"type": "address"
+			},
+			{
+				"name": "_manufacture_date",
+				"type": "uint256"
+			},
+			{
+				"name": "_mfg",
+				"type": "address"
+			},
+			{
+				"name": "_sup",
+				"type": "address"
+			},
+			{
+				"name": "_ret",
+				"type": "address"
+			},
+			{
+				"name": "_cust",
+				"type": "address"
+			},
+			{
+				"name": "_expiry_date",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "tracks",
+		"outputs": [
+			{
+				"name": "_product_id",
+				"type": "uint256"
+			},
+			{
+				"name": "_prev_product_owner",
+				"type": "address"
+			},
+			{
+				"name": "_new_product_owner",
+				"type": "address"
+			},
+			{
+				"name": "_transfer_type",
+				"type": "string"
+			},
+			{
+				"name": "_timeStamp",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_address",
+				"type": "address"
+			},
+			{
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"name": "pass",
+				"type": "string"
+			}
+		],
+		"name": "validatelogin",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+]);
+
+var ewaste = ewasteContract.at('0xef7d4b314b6c09d4393eda814914552e43ffeb46');
+console.log(ewaste);
+-->
+<script>
+	if (typeof(Storage) !== "undefined") {
+  // Code for localStorage/sessionStorage.
+  console.log("present");
+  console.log(getaccount);
+} else {
+  // Sorry! No Web Storage support..
+  console.log("absent");
+}
+var getaccount1;
+web3.eth.getCoinbase(function(err, account) {
+      if (err === null) {
+        getaccount1 = account;
+		console.log("Your Account: " + account);
+    $("#btnloginpress").click(function() {
+    $("#signinalert").show();
+    ewaste.validatelogin(getaccount1,$("#Uname").val(), $("#pass").val(), (err, res) => {
+    if (res[0]==1) 
+    {
+        $("#signinalert").html('success');  
+       // $('#notlogged1').hide();
+		$('#notlogged').hide();
+		usertype=res[1];
+		console.log(usertype);
+		sessionStorage.setItem("address",getaccount);
+		sessionStorage.setItem("usertype",usertype);
+		console.log(usertype.length);
+		//console.log(web3.toAscii(res[1]));
+		$('#logged').show();
+		if(usertype=="Manufacturer")
+			$("#manu").show();
+		else
+		$("#notmanu").show();
+    }  
+	else
+	{
+		$("#signinalert").html('failed'); 
+		console.log(err); 
+		sessionStorage.removeItem("address");
+		sessionStorage.removeItem("usertype");
+	}
+       
+       
+       
+    });
+	} );
+}
+	});
+	
+</script>
+          
+</body>
+</html>
